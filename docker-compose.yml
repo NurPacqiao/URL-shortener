@@ -1,0 +1,48 @@
+services:
+  # 1. DATABASE
+  database:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: app_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  # 2. BACKEND (PHP 8.4)
+  backend:
+    build: ./docker/php
+    volumes:
+      - ./backend:/var/www/html
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database
+      - rabbitmq
+    # Keeps the container running so we can execute commands inside
+    command: tail -f /dev/null
+
+  # 3. FRONTEND (Node/Next.js)
+  frontend:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+    command: sh -c "npm install && npm run dev"
+
+  # 4. MESSAGE BROKER (RabbitMQ)
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"   # Communication port
+      - "15672:15672" # Dashboard UI
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+
+volumes:
+  db-data:
