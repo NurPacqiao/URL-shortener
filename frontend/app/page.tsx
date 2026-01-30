@@ -8,7 +8,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Load links on start
+  // Load links on start the page
   useEffect(() => {
     fetchLinks();
   }, []);
@@ -48,14 +48,14 @@ export default function Home() {
     if (!confirm("Are you sure?")) return;
 
     await fetch(`http://localhost:8000/api/${id}`, { method: "DELETE" });
-    fetchLinks(); // Refresh the list
+    fetchLinks();
   }
 
   return (
     <main className="min-h-screen bg-gray-900 text-white p-8 flex flex-col items-center">
       <div className="max-w-xl w-full">
         <h1 className="text-4xl font-bold mb-8 text-center text-blue-500">
-          🚀 Speedrun Shortener
+          URL Shortener
         </h1>
 
         <form onSubmit={shortenUrl} className="flex gap-2 mb-8">
