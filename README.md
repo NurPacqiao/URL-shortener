@@ -23,38 +23,27 @@ Features asynchronous click tracking via RabbitMQ, a RESTful API, and a reactive
 
 ## ⚡️ Quick Start Guide
 
-### 1. Start the Infrastructure
+### 1. Build & Start the System
 
-Run the entire stack (Frontend, Backend, Database, RabbitMQ) in the background:
+This command builds the Docker images (Frontend & Backend) and starts all services in the background.
 
-````bash
-docker compose up -d
+```bash
+docker compose up -d --build
 
 # Install PHP packages
 docker compose exec backend composer install
 
-### 2. Initialize the Backend
-
 # Run database migrations
 docker compose exec backend php bin/console doctrine:migrations:migrate --no-interaction
 
-### 3. Start the Background Worker
 docker compose exec backend php bin/console messenger:consume async -vv
 
-### 4. Run Unit Tests
 docker compose exec backend php bin/phpunit
 
-```markdown
-## 🌐 Access Points
+Service,URL,Credentials
+Frontend App,http://localhost:3000,N/A
+Backend API,http://localhost:8000/api/urls,N/A
+RabbitMQ Dashboard,http://localhost:15672,user / password
 
-| Service | URL | Credentials |
-| :--- | :--- | :--- |
-| **Frontend App** | `http://localhost:3000` | N/A |
-| **Backend API** | `http://localhost:8000/api/urls` | N/A |
-| **RabbitMQ Dashboard** | `http://localhost:15672` | `user` / `password` |
-
-### How to Stop
-To stop all containers and free up resources:
-
-docker compose down
-````
+docker compose restart backend
+```
